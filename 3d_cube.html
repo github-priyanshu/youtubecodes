@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      font-family: system-ui;
+      box-sizing: border-box;
+    }
+    .flex{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body{
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(#4eb8ff,#0099ff);
+    }
+    .box{
+      width: var(--numCube);
+      height: var(--numCube);
+      transform-style: preserve-3d;
+    }
+    .box,.box .plate,.box .plate .blockLine{
+      transform-style: preserve-3d;
+      pointer-events: none;
+    }
+    .smBox > div{
+      position: absolute;
+      background: var(--bg);
+      pointer-events: auto;
+
+    }
+    .smBox{
+      pointer-events: auto;
+      --bg: #fff;
+    }
+    .plate{
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: var(--numCube);
+      width: var(--numCube);
+    }
+    .shade{
+      filter: drop-shadow(0 160px 20px #0005);
+    }
+    .blockLine{
+      position: relative;
+      width: var(--numCube);
+      height: 30px;
+    }
+  </style>
+
+  <!-- entrance -->
+  <style>
+    .entrance{
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: -100vh;
+      background: #00000037;
+      /*transition: all .25s;*/
+    }
+    .entrance.active{
+      top: 0vh;
+    }
+    .entrance > div{
+      padding: 8px 20px;
+      background: #fff;
+      color: #333;
+      position: absolute;
+      bottom: 200px;
+      cursor: pointer;
+      box-shadow: 0 20px 40px #0004;
+      border-radius: 10px;
+      font-family: sans-serif;
+    }
+    .creator{
+      position: fixed;
+      top: 20px;
+      border-radius: 99px;
+      overflow: hidden;
+      filter: drop-shadow(0px 20px 30px #0005);
+    }
+    .creator > *{
+      padding: 10px 20px;
+      outline: none;
+      color: #222;
+      border: none;
+      outline: none;
+      background: #fff;
+    }
+    .bot{
+      position: absolute;
+      bottom: 0;
+      padding: 10px;
+      max-width: 254px;
+      flex-flow: column;
+    }
+    .colBox{
+      flex-flow: row wrap;
+    }
+    .colBox .col{
+      width: 20px;
+      height: 20px;
+      border-radius: 3px;
+      margin: 4px;
+      font-size: 2em;
+    }
+    .col.active{
+      border: 2px solid #fff;
+    }
+    .cross{
+      width: 20px;
+      height: 20px;
+      background: #0002;
+      cursor: pointer;
+    }
+    .cross span{
+      position: absolute;
+      top: 7px;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body class="flex">
+  <div class="creator">
+    <input type="text" onchange="numCube=this.value;create();" placeholder="Enter a number" id="cr">
+    <button>Go</button>
+  </div>
+  <div class="shade">
+    <div class="box flex"></div>
+  </div>
+  <div class="bot flex">
+    <div class="cross col flex active" onclick="colClick(this)"><span>&Cross;</span></div>
+    <div class="colBox flex"></div>
+  </div>
+
+  <div class="entrance flex" onclick="fullScr()">
+    <div>Tap to enter</div>
+  </div>
+
+  <script>
+    var log=console.log;
+    function op(elem){return document.querySelector(elem)}
+    function opp(elem){return document.querySelectorAll(elem)}
+    function block(parent,cls,width,height,grith,){
+      var elem=`
+      <div class="parent-3d ${cls}" style="transform-style: preserve-3d; width: ${width}px; height: ${height}px; ">
+        <div id="${cls}-front" style="transform-origin: center; transform: translateZ(${grith}px);
+        left:0;
+        top:0;
+        width: 100%;
+        box-shadow: inset ${width}px ${height}px 0 #00000014;
+        height: 100%;
+        "></div>
+
+        <div id="${cls}-botton" style="transform-origin: center; transform: translateZ(0);
+        left:0;
+        top:0;
+        width: 100%;
+        height: 100%;
+        box-shadow: inset ${width}px ${height}px 0 #0000003d;
+        "></div>
+
+        <div id="${cls}-left" style="transform-origin: left; transform: rotateY(-90deg);
+        left: 0;
+        top: 0;
+        height: 100%;
+        box-shadow: inset ${width}px ${height}px 0 #00000033;
+        width: ${grith}px;
+        "></div>
+
+        <div id="${cls}-right" style="transform-origin: right; transform: rotateY(90deg);
+        right: 0;
+        top: 0;
+        box-shadow: inset ${width}px ${height}px 0 #00000033;
+        height: 100%;
+        width: ${grith}px;
+        "></div>
+
+        <div id="${cls}-up" style="transform-origin: top; transform: rotateX(90deg);
+        left: 0;
+        top: 0;
+        box-shadow: inset ${width}px ${grith}px 0 #00000000;
+        width: 100%;
+        height: ${grith}px;
+        "></div>
+
+        <div id="${cls}-down" style="transform-origin: bottom; transform: rotateX(-90deg);
+        left: 0;
+        bottom: 0;
+        box-shadow: inset ${width}px ${grith}px 0 #00000045;
+        width: 100%;
+        height: ${grith}px;
+        "></div>
+
+      </div>
+      `;
+
+      parent.insertAdjacentHTML('beforeend',elem);
+    }
+  </script>
+
+  <!-- simulation -->
+  <script>
+    var plate3d=op(".box");
+    var rotated=[0,0];
+    var col="";
+
+    function addSimulation() {
+      document.onmousedown = (e) => {
+          simulationStPt = [e.clientX, e.clientY]
+          document.addEventListener('mousemove', simulate)
+        
+      }
+      document.onmouseup = () => {
+        document.removeEventListener('mousemove', simulate)
+      }
+      function simulate(ev) {
+        ev.preventDefault();
+        if (ev.type == 'touchmove') {
+          var simulatingPt = [(simulationStPt[0] - ev.touches[0].clientX), (simulationStPt[1] - ev.touches[0].clientY)];
+        } else {
+          var simulatingPt = [(simulationStPt[0] - ev.clientX), (simulationStPt[1] - ev.clientY)];
+        }
+        plate3d.style.transform = `perspective(2000px) rotateX(${rotated[1] += simulatingPt[1] / 2}deg) rotateY(${rotated[0] += simulatingPt[0] / -2}deg)`
+
+        if (ev.type == 'touchmove') {
+          simulationStPt = [ev.touches[0].clientX,ev.touches[0].clientY];
+        } else {
+          simulationStPt = [ev.clientX, ev.clientY];
+        }
+      }
+
+
+      document.ontouchstart = (e) => {
+        simulationStPt = [e.touches[0].clientX, e.touches[0].clientY]
+        document.addEventListener('touchmove', simulate)
+      }
+    }
+
+  </script>
+  <script>
+
+    var numCube=4;
+
+    function applyNumCube(){
+      op(".box").style.setProperty("--numCube",30*numCube+'px');
+    }
+
+
+    addSimulation();
+    var box=op('.box');
+
+    function create(){
+      box.innerHTML='';
+      for(var a=0;a<numCube;a++){
+        box.insertAdjacentHTML('afterbegin',`<div class="plate" style="transform: translateZ(${(a*30)-(numCube*15)}px)"></div>`); 
+        for(var b=0; b<numCube; b++){
+          op(".plate").insertAdjacentHTML('afterbegin','<div class="blockLine flex"></div>');
+          for(var c=0; c<numCube; c++){
+            block(op('.blockLine'),'smBox',30,30,30)
+          }
+        }
+      }
+      applyNumCube();
+      setUp();
+    }
+
+    setTimeout(setUp,1000);
+
+    function setUp(){
+      opp('.smBox').forEach(val=>{
+        val.style.left=val.offsetLeft*2+'px';
+        val.style.position="absolute";
+        val.addEventListener('click',()=>{
+          if(col=='' || !col){
+            val.remove();
+          }else{
+            val.style.setProperty("--bg",col);
+          }
+        })
+      })
+    }
+
+    function fullScr(){
+      op(".entrance").classList.remove('active');
+      document.documentElement.requestFullscreen();
+    }
+  </script>
+  <!-- make color palet -->
+   <script>
+    var colorAry=["#23bb57", "#58cedf", "#ce09fa", "#4c1ca4", "#7de7d8", "#84d8eb", "#d49271", "#238b61", "#9b955e", "#db8d6b", "#8823a4", "#61bfa6", "#5c3486", "#7dcd08", "#ac8adc", "#149d23"]
+
+    function makeColo(){
+      var html="";
+      for(a of colorAry){
+        html+=`<div class="col" onclick="colClick(this)" style="background: ${a}" value="${a}"></div>`;
+      }
+      log(html)
+      op(".colBox").innerHTML=html;
+    }
+    function colClick(elem){
+      try{op('.col.active').classList.remove('active')}catch{}
+      elem.classList.add('active');
+      col=elem.getAttribute('value');
+    }
+    makeColo();
+   </script>
+</body>
+</html>

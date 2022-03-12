@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script>
+    var log=console.log;
+    function op(elem){return document.querySelector(elem)}
+    function opp(elem){return document.querySelectorAll(elem)}
+  </script>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .flex{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body{
+      width: 100vw;
+      height: 100vh;
+      background: #222;
+    }
+    .box{
+      margin: 40px;
+    }
+    .circle{
+      width: 200px;
+      height: 200px;
+    }
+    .points > div,
+    .points{
+      width: 3px;
+      height: 15px;
+      border-radius: 10px;
+      background: #0007;
+      position: absolute;
+      transform: rotate(calc(var(--i)*var(--d)))  translateY(-100px) ;
+    }
+    .points > div{
+      animation: glow .01s linear forwards;
+      animation-delay: calc(var(--i)*.05s);
+      transform: none;
+    }
+    @keyframes glow {
+      100%{
+        background: var(--col);
+        box-shadow: 0 0 20px var(--col);
+      }      
+    }
+
+    .text{
+      position: absolute;
+      color: #fff;
+      font-family: sans-serif;
+      font-size: 1.3em;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      text-align: center;
+    }
+    big{
+      display: block;
+      font-size: 2em;
+    }
+
+  </style>
+</head>
+
+<body class="flex">
+  <div class="box flex">
+    <div class="circle flex" dots="80" markedDot="45" style="--col: #ff0070;"></div>  
+    <div class="text">
+      <big>60%</big>
+      <small>JavaScript</small>
+    </div>
+  </div>
+  <div class="box">
+    <div class="circle flex" dots="80" markedDot="60" style="--col: #0f0;"></div>  
+    <div class="text">
+      <big>75%</big>
+      <small>PHP</small>
+    </div>
+  </div>
+  <div class="box">
+    <div class="circle flex" dots="80" markedDot="75" style="--col: #52a8ff;"></div>  
+    <div class="text">
+      <big>90%</big>
+      <small>Python</small>
+    </div>
+  </div>
+
+  <script>
+    var circle=opp(".circle");
+
+    circle.forEach(val=>{
+      log(val)
+      var dotsNum=val.getAttribute('dots');
+      var markedDots=val.getAttribute('markedDot');
+      var ptE='';
+      var deg=360/dotsNum;
+
+      for(var a=1; a<=dotsNum; a++){
+        var ind=a <= markedDots?"<div></div>":'';
+
+        ptE+=`<div class="points" style="--i: ${a}; --d: ${deg}deg;">${ind}</div>`
+      }
+      log(dotsNum)
+
+      val.innerHTML=ptE;
+    })
+  </script>
+</body>
+</html>

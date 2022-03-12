@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<style>
+	*{
+		margin: 0;padding: 0;
+		position: relative;
+		box-sizing: border-box;
+	}
+	.flex{
+		display: flex;align-items: center;justify-content: center;
+	}
+	body{
+		min-height: 100vh;
+		background: #1a1524;
+		color: #fff;
+	}
+	.bg{
+		margin: 100px;
+	}
+	.bg .blur,
+	.bg .col{
+		width: 100%;
+    height: 100%;
+    background: #fff;
+    left: 0;
+    top: 0;
+    position: absolute;
+    transform: skew(3deg, 3deg);
+		border-radius: 5px;
+    background: linear-gradient(137deg, #ff00b1, #00c4ff);
+	}
+	.bg .blur{
+		filter: blur(20px);
+	}
+	.poem{
+		font-family: monospace;
+		text-align: center;
+    font-weight: bolder;
+		width: max-content;padding: 10px;
+		background: #1a1524;
+		z-index: 1;
+		border-radius: 10px;
+	}
+	.poem .head{
+		color: #fff;
+		font-size: 3em;
+		margin: 20px 0;
+		text-transform: uppercase;
+	}
+	.poem p{
+    font-size: 1.3em;
+    margin: 10px 0;
+    line-height: 1.9em;
+    background: linear-gradient(45deg, #59ffc2, #0072ff);
+    color: transparent;
+    -webkit-background-clip: text;
+    color: transparent;
+    filter: hue-rotate(calc(var(--i)*60deg));
+    pointer-events: none;
+	}
+	.poem .line{
+		position: absolute;
+		width: 10px;
+		height: 10px;
+		background: #ff8888;
+		border-radius: 50%;
+	}
+
+	.poem .line::after{
+		content: '';
+		position: absolute;width: 100%;
+		height: 100%;
+		background: #ff8888;
+		filter: blur(10px);
+		border-radius: 50%;
+	}
+	.writer{
+		position: absolute;
+		right: 30px;
+		bottom: 30px;
+		color: #00c4ff;
+		font-size: 2em;
+		text-shadow: 0 0 100px #00c4ff,0 0 40px #00c4ff;
+	}
+</style>
+<body class="flex">
+	<div class="bg">
+		<div class="col"></div>
+		<div class="blur"></div>
+		<div class="poem">
+			<div class="head">If I could be someone from my choice</div>
+			<p>If I could be someone from my choice,<br>
+			I would choose to be the tree's voice.<br>
+			So that I could make people realise,<br>
+			And give them some good advice.<br>
+			Plants also feel pain,<br>
+			And in return have nothing to gain.</p>
+
+			<p>If I could be someone from choice,<br>
+			I would choose to be a stray animal's voice.<br>
+			Though they try to conceal,<br>
+			But their inner heart cries and reveal,<br>
+			And wants to show how being dumb feels.</p>
+
+			<p>If I could be someone from my choice,<br>
+			I would choose to be that starving kid's voice.<br>
+			Who longs for every bite of food,<br>
+			And spents the entire life in brood<br>
+			Seeing the food, that sparkling glitters in their eyes,<br>
+		  And their heard vies.</p>
+
+			<p>If I could be someone from my choice,<br>
+			I would choose to be that victim girl's voice.<br>
+			Who just wants to be safe not to be raped!<br>
+			who cries her heart out for justice,<br>
+			But in return just recieves prejudice!</p>
+
+			<p>If I could be someone from my choice,<br>
+			I would choose to be every suffering's voice.<br>
+			So that people can live their life carefree,<br>
+			Everyone's life filled of glee.<br>
+			So that all the tolerance comes to an end.<br>
+			And every being has positive intend.</p>
+			<div class="writer">-SHRUTI</div>
+		</div>
+
+	</div>
+
+	<script>
+		var poem=document.querySelector(".poem");
+		var stanza=document.querySelectorAll(".poem p");
+
+		for(var i=1; i<stanza.length; i++){
+			stanza[i].style.setProperty("--i",i);
+		}
+
+		drop=true;
+		poem.onmousemove=(e)=>{
+			if(drop){
+				drop=false;
+				make(e);
+				setTimeout(()=>{
+					drop=true;
+				},100)
+			}
+		};
+		function make(e){
+			var left=e.offsetX;
+			var topx=e.offsetY;
+			var rot=Math.ceil(Math.random()*360);
+			var scale=Math.random()+.3;
+			poem.insertAdjacentHTML("afterbegin",`<div class='line' style="left: ${left}px; top: ${topx}px;filter:hue-rotate(${rot}deg); transform: scale(${scale});"></div>`);
+		}
+	</script>
+</body>
+</html>

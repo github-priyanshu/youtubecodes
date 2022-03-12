@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Random lines</title>
+</head>
+<style>
+	*{
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		position: relative;
+	}
+	body{
+		width: 100%;
+		min-height: 100vh;
+		background: #111;
+		overflow: hidden;
+	}
+	.flex{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.c{
+		flex-flow: column;
+	}
+	.line{
+		width: var(--w);
+		height: var(--h);
+		border-radius: 99px;
+		position: absolute;
+		left: var(--l);
+		top: var(--t);
+		transform: var(--r);
+	}
+	.dot{
+		position: absolute;
+	  width: var(--h);
+		height: var(--h);
+		background: #000;
+		border-radius: 99px;
+		animation: go 1s linear 1;
+		filter: hue-rotate(var(--rot));
+		background: linear-gradient(90deg,#41abf2,#4186f2);
+	}
+	@keyframes go{
+		0%{
+			transform: translateX(0px) scale(0);
+			width: var(--h);
+		}
+		5%{
+			transform: translateX(0px) scale(1);
+			width: var(--h);
+		}
+		50%{
+			transform: translateX(0px) scale(1);
+			width: var(--w);
+		}
+		85%{
+			transform: translateX(var(--w)) scale(1);
+			width: var(--h);
+		}
+		100%{
+			transform: translateX(var(--w)) scale(0);
+			width: var(--h);
+		}
+	}
+</style>
+<body class="flex">
+<script>
+	var log=console.log;
+	function op(e){return document.querySelector(e)}
+	function opp(e){return document.querySelectorAll(e)}
+
+	setInterval(make,30)
+
+	function make(){
+		var hh=10+Math.floor(Math.random()*10),
+		deg=[0,90,180,270],
+		deg=deg[Math.floor(Math.random()*4)]+"deg",
+		prop={
+			l: Math.floor(Math.random()*window.innerWidth) - hh*10+"px",
+			t: Math.floor(Math.random()*window.innerHeight)+"px",
+			rot: Math.floor(Math.random()*360)+"deg",
+			h: hh+"px",
+			w: hh*20+"px",
+			r: `rotate(${deg})`,
+		}
+
+		var str="";
+		for(let val in prop){
+			str+=`--${val}: ${prop[val]};`;
+		}
+
+		var a=document.createElement("div");
+		a.setAttribute("style",str);
+		a.setAttribute("class","line");
+		a.innerHTML=`<div class="dot"></div>`;
+		document.body.insertAdjacentElement("beforeend",a);
+		a.onanimationend=()=>{
+			a.remove()
+		}
+	}
+
+</script>
+</body>
+</html>
