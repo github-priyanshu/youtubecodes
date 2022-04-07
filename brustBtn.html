@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Button</title>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap" rel="stylesheet"> 
+
+</head>
+<style>
+	*{
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		position: relative;
+	}
+	body{
+		width: 100%;
+		min-height: 100vh;
+		background: #222;
+		color: #fff;
+		font-family: Fredoka;
+		font-size: 3em;
+		overflow: hidden;
+	}
+	.flex{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.c{
+		flex-flow: column;
+	}
+	.btn{
+		width: 200px;
+		height: 200px;
+		margin: 100px;
+		cursor: pointer;
+	}
+	.btn span{
+		pointer-events: none
+	}
+	.btn .bg{
+		width: 100%;
+		height: 100%;
+		position: absolute;
+	}
+	.btn .bg *{
+		pointer-events: none;
+	}
+	.btn .bg .bgm{
+		position: absolute;
+		transition: all cubic-bezier(0.99, -0.59, 0, 1.42) 1s;
+	}
+	.btn .bg .bgm .img,
+	.btn .bg .bgm span{
+		background: #f00;
+		width: var(--d);
+		height: var(--d);
+		display: block;
+	}
+	.btn .bg.active .bgm{
+		transform: translate(var(--tx),var(--ty)) scale(.5);
+	}
+	.btn .bg .bgm .circle{
+		border-radius: 50%;		
+		background: #0099ff;
+	}
+	.btn .bg .bgm .dim{
+		border-radius: 0;
+		transform: rotate(45deg);
+		background: #a000ff;
+	}
+	.btn .bg .bgm .img{
+		border-radius: 0;
+		background: none;
+		transform: scale(1.3);
+	}
+</style>
+<body class="flex">
+	<div class="btn flex">
+		<div class="bg" type="circle">
+		</div>
+		<span>Round</span>
+	</div>
+	<div class="btn flex">
+		<div class="bg" type="heart">
+		</div>
+		<span>Heart</span>
+	</div>
+	<div class="btn flex">
+		<div class="bg" type="dim">
+		</div>
+		<span>Diamond</span>
+	</div>
+	
+<script>
+	var log=console.log;
+	function op(e){return document.querySelector(e)}
+	function opp(e){return document.querySelectorAll(e)}
+
+	var bgs=opp(".bg"),
+	mw,mh,
+	music=new Audio("audio.mp3");
+
+	bgs.forEach(val=>{
+		var html='',
+		t=val.getAttribute("type");
+		mw=val.offsetWidth;
+		mh=val.offsetHeight;
+		val.addEventListener("click",clicked);
+		for(let i=0; i<=40; i++){
+			html+=getDot(t);
+		}
+		val.innerHTML=html;
+	})
+
+	function clicked(e){
+		var cx=e.offsetX
+	  cy=e.offsetY,
+	  p=e.currentTarget;
+
+	  for(let val of p.children){
+	  	var tx=val.offsetLeft - cx,
+	  	ty=val.offsetTop-cy;
+
+	  	val.style.setProperty("--tx",tx*2+"px");
+	  	val.style.setProperty("--ty",ty*2+"px");
+	  }
+  	p.classList.add('active');
+  	setTimeout(()=>{
+  		p.classList.remove('active');
+  	},1000);
+  	setTimeout(()=>{
+	  	music.play();
+  	},500)
+	}
+
+	function getDot(type){
+		var d=5+ Math.floor(Math.random()*15),
+		l=Math.floor(Math.random()*(mw-d)),
+		t=Math.floor(Math.random()*(mh-d));
+		style=`left:${l}px;top:${t}px;--d:${d}px;`;
+		return getTypeDot(type,style);
+	}
+	function getTypeDot(t,style){
+		var obj={
+			circle:"<div class='bgm' style='_stm_'><span class='circle'></span></div>",
+			dim:"<div class='bgm' style='_stm_'><span class='dim'></span></div>",
+			heart:"<div class='bgm' style='_stm_'><img src='heart.png' class='img'></div>",
+		}
+		log(t)
+		return obj[t].replace("_stm_",style);
+	}
+</script>
+</body>
+</html>
