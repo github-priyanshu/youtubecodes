@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>d</title>
+</head>
+<style>
+	*{
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		position: relative;
+	}
+	body{
+		background: #fff;
+		color: #000;
+		min-height: 100vh;
+		width: 100%;
+		background: #111;
+		overflow: hidden;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+	}
+	.f{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.c{
+		flex-flow: column;
+	}
+	.txt{
+		font-size: .5em;
+	}
+	.txt .g{
+		margin: 10px 0;
+		width: 100vw;
+		height: 100px;
+	}
+	.txt{
+		width: 100%;
+		font-weight: bold;
+		height: 100vh;
+	}
+	.g span{
+		position: absolute;
+		transition: all 2s;
+		transition-delay: calc(var(--n)*.005s);
+		transform: scale(.4) rotate(calc(var(--r)*1deg)) translate(calc(var(--tra)*2px));
+		border: 1px solid #f00;
+		color: transparent;
+		border-radius: 50%;
+		margin: 5px;
+	}
+	.g span:nth-of-type(2n){
+		transform: scale(.4) rotate(calc(var(--r)*-1deg)) translate(calc(var(--tra)*2px));
+	}
+	.txt.active .g span{
+		transform: scale(1) rotate(0deg) translate(0px);
+		/*border: 1px solid #f00;*/
+	}
+	button{
+		position: fixed;
+		left: 50%;
+		bottom: 100px;
+		transform: translate(-50%,0);
+		padding: 10px 20px;
+		background: #fff;
+		border: none;
+		border-radius: 2px;
+		letter-spacing: 1px;
+	}
+</style>
+<body onclick="op('.txt').classList.toggle('active')">
+	<div class="txt f c">
+		
+	</div>
+	<button >MAGIC</button>
+
+	<script>
+		var log=console.log;
+		var texts=[
+`
+##     ## ######## ##       ##        #######  
+##     ## ##       ##       ##       ##     ## 
+##     ## ##       ##       ##       ##     ## 
+######### ######   ##       ##       ##     ## 
+##     ## ##       ##       ##       ##     ## 
+##     ## ##       ##       ##       ##     ## 
+##     ## ######## ######## ########  ####### `,
+`
+##    ##  #######  ##    ## ##    ##  #######  
+##   ##  ##     ## ##   ##  ##   ##  ##     ## 
+##  ##   ##     ## ##  ##   ##  ##   ##     ## 
+#####    ##     ## #####    #####    ##     ## 
+##  ##   ##     ## ##  ##   ##  ##   ##     ## 
+##   ##  ##     ## ##   ##  ##   ##  ##     ## 
+##    ##  #######  ##    ## ##    ##  ####### `,
+/*`
+########  #### ##     ## ##    ##    ###   
+##     ##  ##  ##     ##  ##  ##    ## ##  
+##     ##  ##  ##     ##   ####    ##   ## 
+##     ##  ##  ##     ##    ##    ##     ##
+##     ##  ##   ##   ##     ##    #########
+##     ##  ##    ## ##      ##    ##     ##
+########  ####    ###       ##    ##     ##`*/
+		]
+
+		var html="",x=0,y=0,num=1;
+		for(let val of texts){
+			var th="";
+			for(let v of val){
+				th+=getL(v);
+			}
+			html+=`<div class="g" style="width: ${x}px">${th}</div>`;
+			x=0;y=0;
+		}
+		op(".txt").innerHTML=html;
+
+		function getL(l){
+			log(l)
+			var toRet="";
+			if(l=="#"){
+				var tra=Math.floor(Math.random()*200),
+				r=Math.floor(Math.random()*360);
+
+				toRet=`<span style="left: ${x}px; top: ${y}px; --tra: ${tra}; --r: ${r}; --n: ${num};">${l}</span>`;
+				num++;
+			}
+			if(l=="\n"){
+				log("line change")
+				y+=8;
+				x=0;
+			}
+			x+=5;
+			return toRet;
+		}
+
+		function op(e){return document.querySelector(e)}
+		function opp(e){return document.querySelectorAll(e)}
+
+	</script>
+</body>
+</html>
